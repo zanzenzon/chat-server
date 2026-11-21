@@ -1,0 +1,4 @@
+bin/
+logs/*.txt
+logs/*.log
+*.o
