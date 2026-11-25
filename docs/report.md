@@ -44,3 +44,38 @@ being written, not the buffered lines before it.
 `msg_count` and `event_count` (lines 15-16) count every logged message and event.
 These feed the `/stats` command, which will read them through a getter to be
 agreed with the team.
+## 6. Test results (tests/test_logger.c)
+
+The logger was tested on its own, without the server, using a program that starts
+four threads at the same time. Each thread writes 1000 chat messages and 1000 events
+through `log_message` and `log_event`, so the logger receives 8000 writes of each type
+under concurrent access.
+
+The test checks two things for each file:
+
+- The number of lines matches the number of writes (4 x 1000 = 4000).
+- Every line starts with `[`, the timestamp. A line that does not is a sign that two
+  writes were mixed together.
+
+Result:
+
+```
+PASS chat_history: 4000 lines (expected 4000), 0 malformed
+PASS events.log: 4000 lines (expected 4000), 0 malformed
+```
+
+No lines were lost and none were mixed together. This shows that the mutex
+(`log_lock`) and the per-line `fflush` work as designed.
+
+## 7. How to run the logger test
+
+From the project root:
+
+```
+gcc -Wall -Wextra -pthread -I src tests/test_logger.c src/logger.c -o test_logger
+./test_logger
+```
+
+The `-pthread` flag links the thread library. The `-I src` flag tells the compiler
+where to find `logger.h`. The test writes to `test_logs/`, which is listed in
+`.gitignore` and is not part of the project's real logs.
