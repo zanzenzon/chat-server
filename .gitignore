@@ -3,3 +3,4 @@ logs/*.txt
 logs/*.log
 *.o
 test_logs/
+test_logger
