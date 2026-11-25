@@ -2,3 +2,4 @@ bin/
 logs/*.txt
 logs/*.log
 *.o
+test_logs/
