@@ -17,10 +17,6 @@ $(BIN)/launcher: src/launcher.c
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(BIN)/launder: src/launcher.c
-	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) -o $@ $^
-
 clean:
 	rm -rf $(BIN)
 
