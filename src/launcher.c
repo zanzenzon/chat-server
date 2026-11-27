@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,6 +46,9 @@ static void handle_sigint(int sig)
 
 int main(int argc, char **argv)
 {
+	printf("[launcher] my pid=%d, my parent (shell) pid=%d\n", (int)getpid(), (int)getppid());
+	fflush(stdout);
+
 	int num_clients = 3;
 	if (argc > 1) {
 		num_clients = atoi(argv[1]);
@@ -94,7 +98,8 @@ int main(int argc, char **argv)
 		}
 		if (cp < 0) {
 			perror("fork client");
-			return 1;
+			stop = 1;
+			break;
 		}
 		pids[nprocs] = cp;
 		roles[nprocs] = "client";
@@ -126,7 +131,7 @@ int main(int argc, char **argv)
 		remaining--;
 		const char *role = "unknown";
 		for (int i = 0; i < nprocs; i++) {
-			if (pids[i] == w) { role = roles[i]; break; }
+			if (pids[i] == w) { role = roles[i]; pids[i] = 0; break; }
 		}
 		if (WIFEXITED(status))
 			printf("[launcher] pid=%-6d (%s) exited with status %d\n",

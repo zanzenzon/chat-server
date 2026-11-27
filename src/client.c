@@ -132,6 +132,9 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+	printf("[client %s] my pid=%d, my parent (launcher) pid=%d\n", user, (int)getpid(), (int)getppid());
+	fflush(stdout);
+
 	/* ignore SIGPIPE so a write to a closed socket won't terminate us */
 	signal(SIGPIPE, SIG_IGN);
 
